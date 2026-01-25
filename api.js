@@ -34,18 +34,19 @@ app.post('/webhook', (req, res) => {
     new Date().toISOString() + ': ' + JSON.stringify(data) + '\n'
   );
   
-  const texto = data.text;
-  const de = data.from;
+  // ✅ EXTRAER DATOS CORRECTAMENTE:
+  const texto = data.messageData?.textMessageData?.textMessage;
+  const de = data.senderData?.sender;
+  const nombre = data.senderData?.senderName;
   
   console.log(`💬 Mensaje: "${texto}"`);
-  console.log(`👤 De: ${de}`);
+  console.log(`👤 De: ${nombre} (${de})`);
   
   res.json({ok: true, recibido: data});
 });
 
 app.get('/estado', (req, res) => res.json({ activo: true }));
 
-// ✅ CAMBIO AQUÍ:
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ API + WEBHOOK on port ${PORT}`);

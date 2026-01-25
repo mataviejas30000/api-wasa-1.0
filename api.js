@@ -30,12 +30,10 @@ app.post('/webhook', (req, res) => {
   
   console.log('📩 Webhook recibido:', JSON.stringify(data, null, 2));
   
-  // Guardar en log
   fs.appendFileSync('mensajes.log', 
     new Date().toISOString() + ': ' + JSON.stringify(data) + '\n'
   );
   
-  // Extraer datos del mensaje
   const texto = data.text;
   const de = data.from;
   
@@ -47,4 +45,8 @@ app.post('/webhook', (req, res) => {
 
 app.get('/estado', (req, res) => res.json({ activo: true }));
 
-app.listen(3000, () => console.log('✅ API + WEBHOOK'));
+// ✅ CAMBIO AQUÍ:
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ API + WEBHOOK on port ${PORT}`);
+});

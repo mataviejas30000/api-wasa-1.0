@@ -25,9 +25,24 @@ app.post('/enviar', async (req, res) => {
   }
 });
 
-app.post('/webhook', express.raw({type: '*/*'}), (req, res) => {
-  fs.appendFileSync('mensajes.log', new Date().toISOString() + ': ' + req.body.toString() + '\n');
-  res.json({ok: true});
+app.post('/webhook', (req, res) => {
+  const data = req.body;
+  
+  console.log('📩 Webhook recibido:', JSON.stringify(data, null, 2));
+  
+  // Guardar en log
+  fs.appendFileSync('mensajes.log', 
+    new Date().toISOString() + ': ' + JSON.stringify(data) + '\n'
+  );
+  
+  // Extraer datos del mensaje
+  const texto = data.text;
+  const de = data.from;
+  
+  console.log(`💬 Mensaje: "${texto}"`);
+  console.log(`👤 De: ${de}`);
+  
+  res.json({ok: true, recibido: data});
 });
 
 app.get('/estado', (req, res) => res.json({ activo: true }));

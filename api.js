@@ -41,34 +41,15 @@ app.post('/webhook', async (req, res) => {
   console.log(`💬 Mensaje: "${texto}"`);
   console.log(`👤 De: ${nombre} (${de})`);
   
-  // 🤖 RESPONDER AUTOMÁTICAMENTE:
-  if (texto && de) {
-    let respuesta = '';
-    
-    // Diferentes respuestas según el mensaje
-    if (texto.toLowerCase().includes('hola')) {
-      respuesta = `¡Hola ${nombre}! 👋 ¿En qué puedo ayudarte?`;
-    } else if (texto.toLowerCase().includes('precio')) {
-      respuesta = 'Nuestros precios varían según el servicio. ¿Qué te interesa?';
-    } else if (texto.toLowerCase().includes('horario')) {
-      respuesta = 'Estamos disponibles de lunes a viernes, 9:00 - 18:00 hrs.';
-    } else {
-      respuesta = `Recibí tu mensaje: "${texto}". Un momento, te respondo pronto.`;
-    }
-    
-    // Enviar respuesta
-    try {
-      await axios.post(
-        `https://api.green-api.com/waInstance${ID_INSTANCE}/sendMessage/${API_TOKEN}`,
-        { 
-          chatId: de,
-          message: respuesta
-        }
-      );
-      console.log(`✅ Respuesta enviada a ${nombre}`);
-    } catch (error) {
-      console.log('❌ Error al enviar respuesta:', error.message);
-    }
+  // 🔄 REENVIAR A N8N (n8n procesará y responderá):
+  try {
+    await axios.post(
+      'https://wasa-bot-n8n.nawdvf.easypanel.host/webhook-test/whatsapp',
+      data
+    );
+    console.log('📤 Reenviado a n8n');
+  } catch (error) {
+    console.log('⚠️ Error al reenviar a n8n:', error.message);
   }
   
   res.json({ok: true, recibido: data});

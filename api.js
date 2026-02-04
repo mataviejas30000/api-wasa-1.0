@@ -34,6 +34,12 @@ app.post('/webhook', async (req, res) => {
     new Date().toISOString() + ': ' + JSON.stringify(data) + '\n'
   );
   
+  // ✅ FILTRO: Solo procesar mensajes ENTRANTES
+  if (data.typeWebhook !== 'incomingMessageReceived') {
+    console.log('⏭️ Webhook ignorado (no es mensaje entrante):', data.typeWebhook);
+    return res.json({ok: true, ignorado: true});
+  }
+  
   const texto = data.messageData?.textMessageData?.textMessage;
   const de = data.senderData?.sender;
   const nombre = data.senderData?.senderName;
@@ -41,7 +47,7 @@ app.post('/webhook', async (req, res) => {
   console.log(`💬 Mensaje: "${texto}"`);
   console.log(`👤 De: ${nombre} (${de})`);
   
-  // 🔄 REENVIAR A N8N (n8n procesará y responderá):
+  // 🔄 REENVIAR A N8N:
   try {
     await axios.post(
       'https://wasa-bot-n8n.nawdvf.easypanel.host/webhook-test/whatsapp',

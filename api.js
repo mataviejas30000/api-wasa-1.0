@@ -47,10 +47,10 @@ app.post('/webhook', async (req, res) => {
   console.log(`💬 Mensaje: "${texto}"`);
   console.log(`👤 De: ${nombre} (${de})`);
   
-  // 🔄 REENVIAR A N8N:
+  // 🔄 REENVIAR A N8N (MODO PRODUCCIÓN):
   try {
     await axios.post(
-      'https://wasa-bot-n8n.nawdvf.easypanel.host/webhook-test/whatsapp',
+      'https://wasa-bot-n8n.nawdvf.easypanel.host/webhook/whatsapp',
       data
     );
     console.log('📤 Reenviado a n8n');

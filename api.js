@@ -12,12 +12,24 @@ const API_TOKEN = 'c0dd84bdb1f346d5a5a646f303f1ccf162f5064cb1f34bc390';
 
 app.post('/enviar', async (req, res) => {
   const { numero, mensaje } = req.body;
-  const chatId = numero.replace('+', '').replace(' ', '') + '@c.us';
+  
+  // Validación
+  if (!numero) {
+    return res.json({ ok: false, error: 'Número requerido' });
+  }
+  
+  // Si ya tiene @c.us, no lo agregues de nuevo
+  const chatId = numero.includes('@c.us') 
+    ? numero 
+    : numero.replace('+', '').replace(' ', '') + '@c.us';
   
   try {
     const respuesta = await axios.post(
       `https://api.green-api.com/waInstance${ID_INSTANCE}/sendMessage/${API_TOKEN}`,
-      { chatId, message: mensaje }
+      { 
+        chatId, 
+        message: mensaje || 'Mensaje vacío' 
+      }
     );
     res.json({ ok: true, data: respuesta.data });
   } catch (error) {
